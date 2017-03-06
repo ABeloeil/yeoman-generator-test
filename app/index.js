@@ -96,13 +96,17 @@ module.exports = class extends Generator {
             distPath: this.isSymfonyApp ? './web' : './dist',
         });
         this.fs.copyTpl(this.templatePath('Constants/ActionTypes.js'), this.destinationPath(prefixPath + '/js/Constants/ActionTypes.js'));
-        this.fs.copyTpl(this.templatePath('Reducers/reducer.js'), this.destinationPath(prefixPath + '/js/Reducers/reducer.js'), {
-            imports: this._getImports(),
-            reducers: this._getReducers(),
-        });
         this.fs.copyTpl(this.templatePath('Stores/configureStore.js'), this.destinationPath(prefixPath + '/js/Stores/configureStore.js'), {
             reducer: `import reducer from '../Reducers/${this.modules.length > 0 ? 'reducer' : 'appReducer'}'`,
         });
+
+        if (this.modules.length > 0) {
+            this.fs.copyTpl(this.templatePath('Reducers/reducer.js'), this.destinationPath(prefixPath + '/js/Reducers/reducer.js'), {
+                imports: this._getImports(),
+                reducers: this._getReducers(),
+            });
+        }
+        this.fs.copyTpl(this.templatePath('Reducers/appReducer.js'), this.destinationPath(prefixPath + '/js/Reducers/appReducer.js'))
     }
 
     _getImports() {

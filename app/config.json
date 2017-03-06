@@ -1,5 +1,5 @@
 {
-    "dependencies": ["react", "react-dom", "react-redux", "redux", "reqwest"],
+    "dependencies": ["react", "react-dom", "react-redux", "redux", "reqwest", "reducer-utilities"],
     "devDependencies": [
         "babel", "webpack", "babel-preset-es2015", "babel-preset-react", "gulp", "gulp-sourcemaps", "webpack-stream",
         "gulp-babel", "gulp-plumber", "vinyl-named", "gulp-util", "gulp-sass", "gulp-clean-css", "gulp-rename"
