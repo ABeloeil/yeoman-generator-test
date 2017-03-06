@@ -1,10 +1,6 @@
 'use strict';
 const Generator = require('yeoman-generator');
-
-const modules = ['react-newsfeed', 'react-notification', 'react-chat'];
-const graphicComponents = ['react-wizard', 'react-data-table', 'react-modal'];
-const devDependencies = ['babel', 'webpack', 'babel-preset-es2015', 'babel-preset-react'];
-const dependencies = ['react', 'react-dom', 'redux', 'react-redux'];
+const config = require('./config.json');
 
 module.exports = class extends Generator {
     constructor(args, opts) {
@@ -34,18 +30,14 @@ module.exports = class extends Generator {
                 type: 'checkbox',
                 name: 'graphicComponents',
                 message: 'Which graphic components do you want to install ?',
-                choices: graphicComponents.map(component => (
-                    {name: component, value: `@upro/${component}`}
-                )),
+                choices: config.graphicComponents,
                 default: [],
             },
             {
                 type: 'checkbox',
                 name: 'modules',
                 message: 'Which modules do you want to install ?',
-                choices: modules.map(mod => (
-                    {name: mod, value: `@upro/${mod}`}
-                )),
+                choices: config.modules,
                 default: [],
             }
         ]).then(answers => {
@@ -64,8 +56,8 @@ module.exports = class extends Generator {
 
     install() {
         this.log('We\'re going to install what you need to build your project!');
-        // this.npmInstall([...dependencies, ...this.modules, ...this.graphicComponents], {'save': true});
-        // this.npmInstall(devDependencies, {'save-dev': true});
+        this.npmInstall([...config.dependencies, ...this.modules, ...this.graphicComponents], {'save': true});
+        this.npmInstall(config.devDependencies, {'save-dev': true});
     }
 
     _extraPrompting() {

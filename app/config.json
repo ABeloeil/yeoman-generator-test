@@ -1,0 +1,17 @@
+{
+    "dependencies": ["react", "react-dom", "react-redux", "redux", "reqwest"],
+    "devDependencies": [
+        "babel", "webpack", "babel-preset-es2015", "babel-preset-react", "gulp", "gulp-sourcemaps", "webpack-stream",
+        "gulp-babel", "gulp-plumber", "vinyl-named", "gulp-util", "gulp-sass", "gulp-clean-css", "gulp-rename"
+    ],
+    "modules": [
+        {"name": "react-notifications", "value": "@upro/react-notifications"},
+        {"name": "react-chat", "value": "@upro/react-chat"},
+        {"name": "react-newsfeed", "value": "@upro/react-newsfeed"}
+    ],
+    "graphicComponents": [
+        {"name": "react-wizard", "value": "@upro/react-wizard"},
+        {"name": "react-modal", "value": "@upro/react-modal"},
+        {"name": "react-datatable", "value": "@upro/react-datatable"}
+    ]
+}
