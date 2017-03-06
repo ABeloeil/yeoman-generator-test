@@ -88,5 +88,9 @@ module.exports = class extends Generator {
           name: this.appName
         });
         this.fs.copyTpl(this.templatePath('.babelrc'), this.destinationPath('.babelrc'));
+        this.fs.copyTpl(this.templatePath('gulpfile.babel.js'), this.destinationPath('gulpfile.babel.js'), {
+            srcPath: this.isSymfonyApp ? './app/Resources' : './src',
+            distPath: this.isSymfonyApp ? './web' : './dist',
+        });
     }
 };
