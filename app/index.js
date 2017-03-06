@@ -11,10 +11,11 @@ module.exports = class extends Generator {
         this.modules = [];
         this.graphicComponents = [];
         this.appName = '';
+        this.intl = false;
     }
 
     initializing() {
-        this.packageJsonExist = this.fs.exists('package.json');
+        this.log('Welcome to the "U Pro generator" !')
     }
 
     prompting() {
@@ -39,12 +40,18 @@ module.exports = class extends Generator {
                 message: 'Which modules do you want to install ?',
                 choices: config.modules,
                 default: [],
+            },
+            {
+                type: 'confirm',
+                name: 'intl',
+                message: 'Did your application need multilanguage management ?'
             }
         ]).then(answers => {
             this.appName = answers.appName;
             this.isSymfonyApp = answers.isSymfony;
             this.modules = answers.modules;
             this.graphicComponents = answers.graphicComponents;
+            this.intl = answers.intl;
         })
     }
 
@@ -56,8 +63,18 @@ module.exports = class extends Generator {
 
     install() {
         this.log('We\'re going to install what you need to build your project!');
-        this.npmInstall([...config.dependencies, ...this.modules, ...this.graphicComponents], {'save': true});
+
+        let dependencies = [...config.dependencies, ...this.modules, ...this.graphicComponents];
+        if (this.intl) {
+            dependencies = [...dependencies, 'react-intl']
+        }
+
+        this.npmInstall(dependencies, {'save': true});
         this.npmInstall(config.devDependencies, {'save-dev': true});
+    }
+
+    end() {
+        this.log('See you next time !');
     }
 
     _extraPrompting() {
@@ -75,14 +92,17 @@ module.exports = class extends Generator {
 
     _createDirectories(prefixPath) {
         this.log('Create directory structure ...');
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Actions']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Api']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Constants']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Components']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Containers']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Reducers']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Stores']);
-        this.spawnCommand('mkdir', ['-p', prefixPath + '/sass']);
+        this.spawnCommand('mkdir', [
+            '-p',
+            prefixPath + '/js/Actions',
+            prefixPath + '/js/Api',
+            prefixPath + '/js/Constants',
+            prefixPath + '/js/Components',
+            prefixPath + '/js/Containers',
+            prefixPath + '/js/Reducers',
+            prefixPath + '/js/Stores',
+            prefixPath + '/sass'
+        ]);
     }
 
     _copyTemplates(prefixPath) {
@@ -106,7 +126,23 @@ module.exports = class extends Generator {
                 reducers: this._getReducers(),
             });
         }
-        this.fs.copyTpl(this.templatePath('Reducers/appReducer.js'), this.destinationPath(prefixPath + '/js/Reducers/appReducer.js'))
+        this.fs.copyTpl(this.templatePath('Reducers/appReducer.js'), this.destinationPath(prefixPath + '/js/Reducers/appReducer.js'));
+        this.fs.copyTpl(this.templatePath(this.intl ? 'appIntl.js' : 'app.js'), this.destinationPath(prefixPath + '/js/app.js'));
+        this.fs.copyTpl(this.templatePath('Components/App.js'), this.destinationPath(prefixPath + '/js/Components/App.js'), {
+            appname: this.appName,
+        });
+
+        if (this.intl) {
+            this.spawnCommand('mkdir', ['-p', prefixPath + '/js/Translations']);
+            this.fs.writeJSON(prefixPath + '/js/Translations/translation.json', {
+                en: {
+                    greet: "Hello {name}"
+                },
+                fr: {
+                    greet: "Bonjour {name}"
+                },
+            })
+        }
     }
 
     _getImports() {
