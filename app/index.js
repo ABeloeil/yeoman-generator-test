@@ -1,12 +1,13 @@
 'use strict';
 const Generator = require('yeoman-generator');
+const yosay = require('yosay');
+const chalk = require('chalk');
 const config = require('./config.json');
 
 module.exports = class extends Generator {
     constructor(args, opts) {
         super(args, opts);
 
-        this.packageJsonExist = false;
         this.isSymfonyApp = false;
         this.modules = [];
         this.graphicComponents = [];
@@ -15,13 +16,18 @@ module.exports = class extends Generator {
     }
 
     initializing() {
-        this.log('Welcome to the "U Pro generator" !')
+        this.log(yosay(`Welcome to the \n "U Pro generator"`));
     }
 
     prompting() {
-        let extraPrompt = this._extraPrompting();
-
-        return this.prompt([...extraPrompt,
+        this.log(chalk.green('Before starting to generate magic, let me ask you some questions'));
+        return this.prompt([
+            {
+                type: 'input',
+                name: 'appName',
+                message: 'How do you want to name your app ?',
+                default: this.appname
+            },
             {
                 type: 'confirm',
                 name: 'isSymfony',
@@ -74,20 +80,7 @@ module.exports = class extends Generator {
     }
 
     end() {
-        this.log('See you next time !');
-    }
-
-    _extraPrompting() {
-        if (!this.packageJsonExist) {
-            return [{
-                type: 'input',
-                name: 'appName',
-                message: 'How do you want to name your app ?',
-                default: this.appname
-            }]
-        }
-
-        return [];
+        this.log(yosay('Bye bye ! \n See you next time !'));
     }
 
     _createDirectories(prefixPath) {
